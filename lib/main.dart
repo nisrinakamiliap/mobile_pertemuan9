@@ -22,6 +22,17 @@ class _MahasiswaPageState extends State<MahasiswaPage> {
   ];
 
   int nextId = 3;
+  // TAHAP 6: Pencarian data.
+  String keyword = '';
+
+  List<Map<String, String>> get dataTampil {
+    final q = keyword.trim().toLowerCase();
+
+    return mahasiswa.where((m) =>
+      m['nama']!.toLowerCase().contains(q) ||
+      m['nim']!.toLowerCase().contains(q)
+    ).toList();
+  }
 
   // TAHAP 3: CREATE. Form mengembalikan data baru.
   Future<void> tambahData() async {
@@ -96,16 +107,22 @@ class _MahasiswaPageState extends State<MahasiswaPage> {
 
       body: Column(
         children: [
+          // TAHAP 6: Kolom pencarian.
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Text('Data tersimpan: ${mahasiswa.length}'),
+            child: TextField(
+              decoration: const InputDecoration(
+                labelText: 'Cari nama atau NIM',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (v) => setState(() => keyword = v),
+            ),
           ),
-
           Expanded(
             child: ListView.builder(
-              itemCount: mahasiswa.length,
+              itemCount: dataTampil.length,
               itemBuilder: (context, index) {
-                final item = mahasiswa[index];
+                final item = dataTampil[index];
 
                 return Card(
                   child: ListTile(
